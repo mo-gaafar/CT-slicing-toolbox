@@ -2,6 +2,7 @@
 from PyQt5 import QtGui, QtWidgets, uic, QtCore
 from PyQt5.QtWidgets import QTabWidget
 from modules import resources, interface
+from modules.displays import Display
 import numpy as np
 from modules.utility import print_debug, print_log
 import sys
@@ -24,9 +25,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowIcon(QtGui.QIcon('./resources/icons/icon.png'))
         self.setWindowTitle("Medical Image Viewer")
 
-        # initialize global variables
-
-        self.image1 = None
+        self.disp = Display(self)
 
         # initialize ui connectors
         interface.init_connectors(self)

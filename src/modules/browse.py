@@ -1,44 +1,43 @@
-import imp
-
-
 from PyQt5.QtWidgets import QFileDialog
-import matplotlib.pyplot as plt
-import numpy as np
-from modules import interface
 from modules.image import *
 from modules.importers import *
+import SimpleITK as sitk
 
 
+def browse_window(self):
 
-def browse_window(self, image_idx=1):
-    self.filename = QFileDialog.getOpenFileName(
-        None, 'open the image file', './', filter="Raw Data(*.bmp *.jpg *.dicom)")
-    path = self.filename[0]
-    print_debug("Selected path: " + path)
+    self.directory = QFileDialog.getExistingDirectory(
+        None, 'open the desired directory', './')
+    
+    print(self.directory)
 
-    if path == '':
-        # raise Warning("No file selected")
-        return
+    volume_array = importer(self.directory)
 
-    # select an image importer based on the file extension
-    importer = read_importer(path)
+    # Move lines to be centered with image
+    self.axial_vline.setValue(volume_array.shape[1] / 2)
+    self.axial_hline.setValue(volume_array.shape[2] / 2)
+    self.axial_oline.setValue((volume_array.shape[1] / 2, volume_array.shape[2] / 2))
 
-    # import the image into an image object
-    self.image1 = importer.import_image(path)
+    # Display samples of all three planes from the 3d volume_array
+    self.axial_image.setImage(volume_array[100, :, :])
+    self.coronal_image.setImage(volume_array[:, 270, :])
+    self.sagittal_image.setImage(volume_array[:, :, 270])
 
-    # update the image and textbox in the viewer
-    interface.refresh_display(self)
 
-def read_importer(path) -> ImageImporter:
-    #parse file extension
-    extension = path.split('.')[-1]
-    #array of supported extensions
-    importers = {
-        'bmp': BMPImporter(),
-        'jpg': JPGImporter(),
-        'dicom': DICOMImporter()
-    }
-    if extension in importers:
-        return importers[extension]
-    else:
-        raise Warning("Unsupported file type")
+def importer(path):
+    # Initialize itk reader
+    reader = sitk.ImageSeriesReader()
+
+    # Read all file names in given directory
+    dicom_names = reader.GetGDCMSeriesFileNames(path)
+
+    # Set these filenames in the itk reader
+    reader.SetFileNames(dicom_names)
+
+    # Execute the reader --> automatically uses the data in all the files to create a 3d volume
+    image = reader.Execute()
+
+    # Extract 3d np array from itk 3d volume
+    image_array = sitk.GetArrayFromImage(image)
+
+    return image_array

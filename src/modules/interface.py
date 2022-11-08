@@ -51,8 +51,8 @@ def init_connectors(self):
 
     ''' Browse buttons'''
     # the index argument maps each function to its respective slot
-    self.insert_image1_pushButton.clicked.connect(
-        lambda: browse.browse_window(self, 1))
+    self.actionOpen.triggered.connect(
+        lambda: browse.browse_window(self))
 
     print_debug("Connectors Initialized")
 
