@@ -14,9 +14,7 @@ def browse_window(self):
     volume_array = importer(self.directory)
 
     # Move lines to be centered with image
-    self.axial_vline.setValue(volume_array.shape[1] / 2)
-    self.axial_hline.setValue(volume_array.shape[2] / 2)
-    self.axial_oline.setValue((volume_array.shape[1] / 2, volume_array.shape[2] / 2))
+    self.disp.center_lines(volume_array)
 
     # Display samples of all three planes from the 3d volume_array
     self.axial_image.setImage(volume_array[100, :, :])
