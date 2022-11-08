@@ -1,6 +1,4 @@
 from PyQt5.QtWidgets import QFileDialog
-from modules.image import *
-from modules.importers import *
 import SimpleITK as sitk
 
 
