@@ -19,6 +19,8 @@ def browse_window(self):
     self.coronal_image.setImage(volume_array[:, 270, :])
     self.sagittal_image.setImage(volume_array[:, :, 270])
 
+    self.volume_array = volume_array 
+
 
 def importer(path):
     # Initialize itk reader

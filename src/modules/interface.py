@@ -6,6 +6,7 @@ from PyQt5.QtGui import *
 # from PIL import Image as PILImage
 # from PyQt5 import QtGui
 # import os
+from modules.displays import Display
 from modules.utility import print_debug
 from modules import browse
 
@@ -53,6 +54,22 @@ def init_connectors(self):
     # the index argument maps each function to its respective slot
     self.actionOpen.triggered.connect(
         lambda: browse.browse_window(self))
+
+    # connectors to the pyqtgraph lines
+    # useful docs: https://pyqtgraph.readthedocs.io/en/latest/api_reference/graphicsItems/infiniteline.html#pyqtgraph.InfiniteLine
+    #connect lines to sigPositionChanged event
+    
+    self.volume_array = None
+    
+    self.axial_vline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"axial"))
+    self.axial_hline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"axial"))
+    self.axial_oline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"axial"))
+
+    self.sagittal_vline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"sagittal"))
+    self.sagittal_hline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"sagittal"))
+
+    self.coronal_vline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"coronal"))
+    self.coronal_hline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"coronal"))
 
     print_debug("Connectors Initialized")
 

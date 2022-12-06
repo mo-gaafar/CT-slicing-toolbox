@@ -15,11 +15,11 @@ class SliceVolume:
     oblique: np.ndarray = field(init=False)
 
     def __post_init__(self):
-        self.axial = self.volume[0, :, :]
+        self.axial = self.volume[np.size(self.volume)[0]//2, :, :]
         self.sagittal = self.volume[:, 0, :]
         self.coronal = self.volume[:, :, 0]
         self.oblique = None
-    
+
     def slice_axial(self, slice_number):
         self.axial = self.volume[slice_number, :, :]
     
