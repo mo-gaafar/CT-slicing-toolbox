@@ -71,6 +71,7 @@ def init_connectors(self):
     self.coronal_vline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"coronal"))
     self.coronal_hline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"coronal"))
 
+    self.oblique_hline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"oblique"))
     print_debug("Connectors Initialized")
 
 def about_us(self):

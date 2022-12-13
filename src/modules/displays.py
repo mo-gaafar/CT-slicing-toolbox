@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pyqtgraph as pg
-
+from modules.slicevolume import get_oblique_slice
 
 pg.setConfigOption('imageAxisOrder', 'row-major')
 
@@ -70,6 +70,8 @@ class Display:
         self.oblique_box.showAxes(False)
         self.oblique_box.setMouseEnabled(x=False, y=False)
         self.oblique_box.addItem(self.oblique_image)
+        self.oblique_hline = pg.InfiniteLine(angle=0, movable=True, pen=Display.pen, name='oblique_hline')
+        self.oblique_box.addItem(self.oblique_hline)
 
     def center_lines(self, arr):
         self.mw.axial_vline.setValue(arr.shape[1] / 2)
@@ -100,6 +102,10 @@ class Display:
             self.sagittal_image.setImage(arr[:, :, int(self.axial_vline.value())])
             #horizontal moves coronal plane
             self.coronal_image.setImage(arr[:, int(self.axial_hline.value()), :])
+            # oblique moves oblique plane
+            self.oblique_image.setImage(get_oblique_slice(arr, 46, self.axial_oline.value()))
+            print("axial oline value" + str(self.axial_oline.value()))
+            # print("axial oline angle" + str(self.axial_oline.angle()))
         
         elif axes == 'coronal':
             # update lines in other planes
@@ -126,3 +132,17 @@ class Display:
             self.axial_image.setImage(arr[int(self.sagittal_hline.value()), :, :])
             # vertical moves coronal plane
             self.coronal_image.setImage(arr[:, int(self.sagittal_vline.value()), :])
+        elif axes == 'oblique':
+            # update lines in other planes
+            # horizontal moves horizontal in coronal plane
+            self.coronal_hline.setValue(self.oblique_hline.value())
+            # horizontal moves horizontal in sagittal plane
+            self.sagittal_hline.setValue(self.oblique_hline.value())
+
+
+            # update slices in other planes
+            # horizontal moves axial plane
+            self.axial_image.setImage(arr[int(self.oblique_hline.value()), :, :])
+
+
+        

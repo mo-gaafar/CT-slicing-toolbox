@@ -8,8 +8,8 @@ class SliceVolume:
 
     The class is initialized with a np.ndarray volume.'''
 
-    volume: np.ndarray = field(required=True)
-    axial: np.ndarray = field(init=False)
+    volume: np.ndarray = field(init=True)
+    axial: np.ndarray = field(init=False)  
     sagittal: np.ndarray = field(init=False)
     coronal: np.ndarray = field(init=False)
     oblique: np.ndarray = field(init=False)
@@ -44,4 +44,48 @@ class SliceVolume:
         # interpolate the values of the volume at the coordinates of the plane
         self.oblique = scipy.interpolate.griddata((x_v, y_v, z_v), values, (x, y, z), method='linear')
 
+#TODO: to be integrated into class later
+def get_oblique_slice(arr, angle, point):
+            # slice through an array given a point and angle of a line in y,z plane
+            # point is a tuple of (y,z) coordinates
+            # angle is in degrees
+            # returns a 2d array of the slice
 
+            # convert angle to radians
+            angle = angle * np.pi / 180
+
+            # get the slope of the line
+            slope = np.tan(angle)
+
+            y = point[0]
+            z = point[1]
+            
+            # point on the line that is closest to the origin
+            # this is the point where the line crosses the y axis
+            y0 = y - slope * z
+
+            # z intercept of the line
+            z0 = z - y / slope
+
+            # at angles more than 45 degrees, the line will cross the z axis so we use z0
+            # at angles less than 45 degrees, the line will cross the y axis so we use y0
+
+            if angle > np.pi / 4:
+                # get an array of discrete coordinates along the line in 3d space 
+                # this is the line that will be sliced through the array
+                z_coords = np.arange(z0, arr.shape[2])
+                y_coords = (z_coords - z0) * slope
+            elif angle < np.pi / 4:
+                # get an array of discrete coordinates along the line in 3d space
+                # this is the line that will be sliced through the array
+                y_coords = np.arange(y0, arr.shape[1])
+                z_coords = (y_coords - y0) / slope
+            else: 
+                # if the angle is 45 degrees, the line will cross both axes
+                raise ValueError("Not implemented")
+            # get the pixels on the plane in x axis
+            plane = arr[ :, y_coords.astype(int), z_coords.astype(int)]
+            # make the plane a 2d array
+            plane = np.squeeze(plane)
+            
+            return plane
