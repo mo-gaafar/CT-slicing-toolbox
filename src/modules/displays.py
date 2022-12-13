@@ -1,6 +1,8 @@
+import math
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pyqtgraph as pg
+import SimpleITK as sitk
 
 
 pg.setConfigOption('imageAxisOrder', 'row-major')
@@ -13,6 +15,7 @@ class Display:
     '''
 
     mw = None
+    image = None
     pen = pg.mkPen(color='g', width=0.5,style=QtCore.Qt.DashLine)
 
     def __init__(self, mw):
@@ -21,6 +24,7 @@ class Display:
         Display.init_sagittal_plot(self.mw)
         Display.init_coronal_plot(self.mw)
         Display.init_oblique_plot(self.mw)
+        # Display.init_resampler(self.mw)
 
 
     def init_axial_plot(self):
@@ -81,6 +85,18 @@ class Display:
 
         self.mw.coronal_vline.setValue(arr.shape[2] / 2)
         self.mw.coronal_hline.setValue(arr.shape[0] / 2)
+
+
+    def init_resampler(self, image):
+        Display.image = image
+        self.resampler = sitk.ResampleImageFilter()
+        self.resampler.SetReferenceImage(Display.image)
+        # self.resampler.SetSize((512, 512, 1))
+
+        width, height, depth = Display.image.GetSize()
+        self.center = Display.image.TransformIndexToPhysicalPoint((int(math.ceil(width/2)),
+                                          int(math.ceil(height/2)),
+                                          int(math.ceil(depth/2))))
     
 
     # quick function to update the image based on axes and sync the remaining lines
@@ -94,12 +110,26 @@ class Display:
             self.coronal_vline.setValue(self.axial_vline.value())
             # horizontal moves vertical in sagittal plane
             self.sagittal_vline.setValue(self.axial_hline.value())
+            # print(self.axial_oline.value())
 
             # update slices in other planes
             #vertical moves sagittal plane
             self.sagittal_image.setImage(arr[:, :, int(self.axial_vline.value())])
             #horizontal moves coronal plane
             self.coronal_image.setImage(arr[:, int(self.axial_hline.value()), :])
+
+
+            transform = sitk.Euler3DTransform(self.center, math.radians(self.axial_oline.angle))
+            self.resampler.SetInterpolator(sitk.sitkNearestNeighbor)
+            self.resampler.SetTransform(transform)
+            # self.resampler.SetOutputDirection((1, 0, 0,
+            #    0, np.cos(self.axial_oline.angle), -np.sin(self.axial_oline.angle),
+            #    0, np.sin(self.axial_oline.angle), np.cos(self.axial_oline.angle)))
+            resampled = self.resampler.Execute(Display.image)
+            resampled = sitk.GetArrayFromImage(resampled)
+            self.oblique_image.setImage(resampled[int(self.axial_oline.value()[0]), :, :])
+
+            
         
         elif axes == 'coronal':
             # update lines in other planes

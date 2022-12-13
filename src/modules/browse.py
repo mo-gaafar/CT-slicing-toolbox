@@ -1,5 +1,8 @@
 from PyQt5.QtWidgets import QFileDialog
 import SimpleITK as sitk
+import matplotlib.pyplot as plt
+import math
+from modules.displays import Display
 
 
 def browse_window(self):
@@ -9,7 +12,7 @@ def browse_window(self):
     
     print(self.directory)
 
-    volume_array = importer(self.directory)
+    volume_array = importer(self, self.directory)
 
     # Move lines to be centered with image
     self.disp.center_lines(volume_array)
@@ -22,7 +25,7 @@ def browse_window(self):
     self.volume_array = volume_array 
 
 
-def importer(path):
+def importer(self, path):
     # Initialize itk reader
     reader = sitk.ImageSeriesReader()
 
@@ -34,6 +37,29 @@ def importer(path):
 
     # Execute the reader --> automatically uses the data in all the files to create a 3d volume
     image = reader.Execute()
+    # print
+    Display.init_resampler(self, image)
+
+    # resampler = sitk.ResampleImageFilter()
+    # resampler.SetReferenceImage(image)
+
+    # width, height, depth = image.GetSize()
+    # center = image.TransformIndexToPhysicalPoint((int(math.ceil(width/2)),
+    #                                       int(math.ceil(height/2)),
+    #                                       int(math.ceil(depth/2))))
+
+    # transform = sitk.GridImageSource()
+    # transform.SetSize()
+    # transform = sitk.Euler3DTransform(center, math.radians(170))
+    # resampler.SetInterpolator(sitk.sitkNearestNeighbor)
+    # resampler.SetTransform(transform)
+    # # resampler.SetOutputDirection((1, 0, 0, ))
+    # out = resampler.Execute(image)
+    # out = sitk.GetArrayFromImage(out)
+    # plt.imshow(out[200, :, :])
+    # plt.show()
+    
+    # reader.
 
     # Extract 3d np array from itk 3d volume
     image_array = sitk.GetArrayFromImage(image)
