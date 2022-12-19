@@ -67,25 +67,23 @@ def get_oblique_slice(arr, angle, point):
             # z intercept of the line
             z0 = z - y / slope
 
-            # at angles more than 45 degrees, the line will cross the z axis so we use z0
-            # at angles less than 45 degrees, the line will cross the y axis so we use y0
+            # y_idx =int( (z_idx - z0) * slope + y0)
+            # get an array of discrete coordinates along the line in 3d space 
+            # this is the line that will be sliced through the array
+            slice = np.zeros((arr.shape[1], arr.shape[2]))
 
-            if angle > np.pi / 4:
-                # get an array of discrete coordinates along the line in 3d space 
-                # this is the line that will be sliced through the array
-                z_coords = np.arange(z0, arr.shape[2])
-                y_coords = (z_coords - z0) * slope
-            elif angle < np.pi / 4:
-                # get an array of discrete coordinates along the line in 3d space
-                # this is the line that will be sliced through the array
-                y_coords = np.arange(y0, arr.shape[1])
-                z_coords = (y_coords - y0) / slope
-            else: 
-                # if the angle is 45 degrees, the line will cross both axes
-                raise ValueError("Not implemented")
+            
+            z_coords = np.arange(0, arr.shape[2])
+            y_coords = (z_coords - z0) * slope
+            for i in range(len(y_coords)):
+                y = round(y_coords[i])
+                if y < 0 or y> arr.shape[1]:
+                    y_coords[i] = 0
+
+            # plane = slice
             # get the pixels on the plane in x axis
             plane = arr[ :, y_coords.astype(int), z_coords.astype(int)]
             # make the plane a 2d array
             plane = np.squeeze(plane)
-            
+             
             return plane

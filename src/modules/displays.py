@@ -103,7 +103,7 @@ class Display:
             #horizontal moves coronal plane
             self.coronal_image.setImage(arr[:, int(self.axial_hline.value()), :])
             # oblique moves oblique plane
-            self.oblique_image.setImage(get_oblique_slice(arr, 46, self.axial_oline.value()))
+            self.oblique_image.setImage(get_oblique_slice(arr, self.axial_oline.angle -1, self.axial_oline.value()))
             print("axial oline value" + str(self.axial_oline.value()))
             # print("axial oline angle" + str(self.axial_oline.angle()))
         
