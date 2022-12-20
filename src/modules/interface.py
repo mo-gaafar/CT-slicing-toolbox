@@ -61,8 +61,8 @@ def init_connectors(self):
     
     self.volume_array = None
     
-    self.axial_vline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"axial"))
-    self.axial_hline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"axial"))
+    self.axial_vline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"axial", self.angle_slider.value()))
+    self.axial_hline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"axial", self.angle_slider.value()))
     self.axial_oline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"axial", self.angle_slider.value()))
 
     self.sagittal_vline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"sagittal"))
