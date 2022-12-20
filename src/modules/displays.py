@@ -137,14 +137,14 @@ class Display:
             self.axial_image.setImage(arr[int(self.sagittal_hline.value()), :, :])
             # vertical moves coronal plane
             self.coronal_image.setImage(arr[:, int(self.sagittal_vline.value()), :])
+
         elif axes == 'oblique':
             # update lines in other planes
             # horizontal moves horizontal in coronal plane
             self.coronal_hline.setValue(self.oblique_hline.value())
             # horizontal moves horizontal in sagittal plane
             self.sagittal_hline.setValue(self.oblique_hline.value())
-
-
+            
             # update slices in other planes
             # horizontal moves axial plane
             self.axial_image.setImage(arr[int(self.oblique_hline.value()), :, :])

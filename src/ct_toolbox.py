@@ -1,7 +1,7 @@
 
 from PyQt5 import QtGui, QtWidgets, uic, QtCore
 from PyQt5.QtWidgets import QTabWidget
-from modules import resources, interface
+from modules import interface
 from modules.displays import Display
 import numpy as np
 from modules.utility import print_debug, print_log

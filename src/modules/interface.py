@@ -1,42 +1,10 @@
 
 # from turtle import onrelease
-from PyQt5.QtWidgets import QTabWidget, QAction, QPushButton, QSlider, QComboBox, QLCDNumber, QMessageBox
+from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtGui import *
-# import numpy as np
-# from PIL import Image as PILImage
-# from PyQt5 import QtGui
-# import os
 from modules.displays import Display
 from modules.utility import print_debug
 from modules import browse
-
-
-
-# def refresh_display(self):
-#     ''' Updates the user interface with the current image and data'''
-#     #TODO update output image here
-#     display_pixmap(self, image_data=self.image1.get_pixels())
-
-#     #TODO update metadata here
-#     display_list(self)
-
-# def display_pixmap(self, image_data):
-#     '''Displays the image data in the image display area'''
-#     # then convert it to image format
-#     data = PILImage.fromarray(image_data.astype(np.uint8))
-#     # save the image file as png
-#     data.save('temp.png')
-#     # display saved image in Qpixmap
-#     self.image1_widget.setPixmap(QtGui.QPixmap("temp.png"))
-#     self.image1_widget.show()
-#     # delete the temporary image file
-#     os.remove('temp.png')
-
-
-# def display_list(self):
-#     '''Displays the metadata in qlabel'''
-#     f_metadata = self.image1.get_formatted_metadata()
-#     self.metadata_widget.setText(f_metadata)
 
 
 def init_connectors(self):

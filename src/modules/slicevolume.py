@@ -66,6 +66,7 @@ def get_oblique_slice(arr, angle, point):
             elif angle == np.pi:
                 y = point
                 z = 0
+                
             # point on the line that is closest to the origin
             # this is the point where the line crosses the y axis
             y0 = y - slope * z
