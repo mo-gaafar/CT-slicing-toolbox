@@ -63,7 +63,7 @@ def init_connectors(self):
     
     self.axial_vline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"axial"))
     self.axial_hline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"axial"))
-    self.axial_oline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"axial"))
+    self.axial_oline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"axial", self.angle_slider.value()))
 
     self.sagittal_vline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"sagittal"))
     self.sagittal_hline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"sagittal"))
@@ -72,6 +72,11 @@ def init_connectors(self):
     self.coronal_hline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"coronal"))
 
     self.oblique_hline.sigPositionChanged.connect(lambda: Display.update_image(self, self.volume_array,"oblique"))
+    
+    self.angle_slider.valueChanged.connect(lambda: Display.update_image(self, self.volume_array,"axial", self.angle_slider.value()))
+    # self.angle_slider.valueChanged.connect(lambda: axial_oline.set)
+    self.angle_slider.valueChanged.connect(lambda: self.angle_label.setText(str("Anlge: "+str(self.angle_slider.value()))))
+    
     print_debug("Connectors Initialized")
 
 def about_us(self):

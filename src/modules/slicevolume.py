@@ -54,11 +54,11 @@ def get_oblique_slice(arr, angle, point):
             # convert angle to radians
             angle = angle * np.pi / 180
 
-            # get the slope of the line
+            # get the slope of the line from angle
             slope = np.tan(angle)
 
-            y = point[0]
-            z = point[1]
+            y = point[1]
+            z = point[0]
             
             # point on the line that is closest to the origin
             # this is the point where the line crosses the y axis
@@ -67,23 +67,38 @@ def get_oblique_slice(arr, angle, point):
             # z intercept of the line
             z0 = z - y / slope
 
-            # y_idx =int( (z_idx - z0) * slope + y0)
             # get an array of discrete coordinates along the line in 3d space 
             # this is the line that will be sliced through the array
             slice = np.zeros((arr.shape[1], arr.shape[2]))
 
+            #intersection with boundary
+            zb = (arr.shape[1] - y0) / slope
+
+            # clip the line intercepts to the boundaries of the array
+            if zb >= arr.shape[2]:
+                zb = arr.shape[2]-1
+            if zb < 0:
+                zb = 0
+                
+            if z0 >= arr.shape[2]:
+                z0 = arr.shape[2]-1
+            if z0 < 0:
+                z0 = 0
+
+            # generate linespace of z coordinates dependent on array size
+            z_coords = np.linspace(int(z0),int(zb)-1, arr.shape[2])
+            y_coords = z_coords * slope + y0
             
-            z_coords = np.arange(0, arr.shape[2])
-            y_coords = (z_coords - z0) * slope
             for i in range(len(y_coords)):
-                y = round(y_coords[i])
-                if y < 0 or y> arr.shape[1]:
+                y = int(round(y_coords[i]))
+                if y < 0 or y>= arr.shape[1]:
                     y_coords[i] = 0
 
-            # plane = slice
+            z_coords = np.round(z_coords)
+
             # get the pixels on the plane in x axis
             plane = arr[ :, y_coords.astype(int), z_coords.astype(int)]
             # make the plane a 2d array
             plane = np.squeeze(plane)
-             
+            
             return plane

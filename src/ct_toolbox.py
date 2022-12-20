@@ -8,10 +8,6 @@ from modules.utility import print_debug, print_log
 import sys
 
 
-#TODO: plan out the structure of the application
-#TODO: plan out the user interface
-#TODO: implement the user interface
-
 class MainWindow(QtWidgets.QMainWindow):
     ''' This is the PyQt5 GUI Main Window'''
 

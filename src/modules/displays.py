@@ -86,7 +86,7 @@ class Display:
     
 
     # quick function to update the image based on axes and sync the remaining lines
-    def update_image(self, arr = None, axes = None):
+    def update_image(self, arr = None, axes = None, angle = 45):
         if arr is None:
             print("No array passed to update_image")
             return
@@ -103,8 +103,9 @@ class Display:
             #horizontal moves coronal plane
             self.coronal_image.setImage(arr[:, int(self.axial_hline.value()), :])
             # oblique moves oblique plane
-            self.oblique_image.setImage(get_oblique_slice(arr, self.axial_oline.angle -1, self.axial_oline.value()))
-            print("axial oline value" + str(self.axial_oline.value()))
+            self.axial_oline.setAngle(angle)
+            self.oblique_image.setImage(get_oblique_slice(arr, angle, self.axial_oline.value()))
+            # print("axial oline value" + str(self.axial_oline.value()))
             # print("axial oline angle" + str(self.axial_oline.angle()))
         
         elif axes == 'coronal':
@@ -113,6 +114,8 @@ class Display:
             self.axial_vline.setValue(self.coronal_vline.value())
             # horizontal moves horizontal in sagittal plane
             self.sagittal_hline.setValue(self.coronal_hline.value())
+            # horizontal moves horizontal in oblique plane
+            self.oblique_hline.setValue(self.coronal_hline.value())
 
             # update slices in other planes
             # horizontal moves axial plane
@@ -126,6 +129,8 @@ class Display:
             self.axial_hline.setValue(self.sagittal_vline.value())
             # horizontal moves horizontal in coronal plane
             self.coronal_hline.setValue(self.sagittal_hline.value())
+            # horizontal moves horizontal in oblique plane
+            self.oblique_hline.setValue(self.sagittal_hline.value())
 
             # update slices in other planes
             # horizontal moves axial plane
