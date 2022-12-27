@@ -91,15 +91,31 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def regionUpdated(self,regionItem):
      points=[]
+     xarr=[]
+     yarr=[]
      points= regionItem.getLocalHandlePositions() 
      for i in range (len(points)):
-      point=points[i][1]
-      print(point.x())
+           point=points[i][1]
+           print(point.x())
+           xarr.append(point.x())
+           yarr.append(point.y())
+           #self.distt(xarr,yarr)
+
+      
+     
+     self.distt(xarr,yarr)
+     print("sssssssssssssssssss")
+     
 
 
       #print(points.pop().split())
       #print(points) 
-    
+    def distt(self,x,y):
+         dist = math.sqrt( (x[1] - x[0])**2 + (y[1] - y[0])**2 )
+         print("distanceeeeeeeeeeeeee")
+         print(dist)
+         return dist
+
     
             
     
