@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pyqtgraph as pg
 from modules.slicevolume import get_oblique_slice
+import math
 
 pg.setConfigOption('imageAxisOrder', 'row-major')
 
@@ -15,12 +16,47 @@ class Display:
     mw = None
     pen = pg.mkPen(color='g', width=0.5,style=QtCore.Qt.DashLine)
 
+    selected_plot = None
+    active = None
+    line_start = None
+    line_end = None
+
+    poly_arr = []
+    items = []
+
     def __init__(self, mw):
         self.mw = mw
+        Display.mw = mw
         Display.init_axial_plot(self.mw)
         Display.init_sagittal_plot(self.mw)
         Display.init_coronal_plot(self.mw)
         Display.init_oblique_plot(self.mw)
+
+        Display.selected_plot = self.mw.axial_box
+        Display.active = 'polygon'
+
+    def setActive(self, active):
+        Display.active = active
+
+        if active == 'line':
+            self.line_seg = pg.LineSegmentROI([0,0], [0,0])
+            self.axial_box.addItem(self.line_seg)
+            Display.items.append(self.line_seg)
+        elif active == 'polygon':
+            self.poly = pg.PolyLineROI([[0,0], [0,0]])
+            self.axial_box.addItem(self.poly)
+            Display.items.append(self.poly)
+        elif active == 'ellipse':
+            self.ellipse = pg.EllipseROI([0,0], 0.001)
+            self.axial_box.addItem(self.ellipse)
+            Display.items.append(self.ellipse)
+
+
+    def clear(self):
+        for i in Display.items:
+            self.axial_box.scene().removeItem(i)
+
+        Display.items.clear()
 
 
     def init_axial_plot(self):
@@ -37,6 +73,81 @@ class Display:
         self.axial_box.addItem(self.axial_vline)
         self.axial_box.addItem(self.axial_hline)
         self.axial_box.addItem(self.axial_oline)
+
+        # self.line_seg = pg.LineSegmentROI([0,0], [0,0])
+        # self.ellipse = pg.EllipseROI([0,0], 0.001)
+        # self.poly = pg.PolyLineROI([[0,0], [0,0]])
+        # # self.ellipse.set
+        # # self.line_seg.state
+        # self.axial_box.addItem(self.line_seg)
+        # self.axial_box.addItem(self.ellipse)
+        # self.axial_box.addItem(self.poly)
+        # # self.poly.setPoints([(0,0), (200, 200), (100, 50)], True)
+
+        self.axial_box.scene().sigMouseClicked.connect(Display.line_mouse_clicked)
+        self.axial_box.scene().sigMouseClicked.connect(Display.ellipse_mouse_clicked)
+        self.axial_box.scene().sigMouseClicked.connect(Display.poly_mouse_clicked)
+
+    def line_mouse_clicked(evt):
+        if Display.active == 'line':
+            vb = Display.selected_plot.plotItem.vb
+            scene_coords = evt.pos()
+            if Display.selected_plot.sceneBoundingRect().contains(scene_coords):
+                mouse_point = vb.mapSceneToView(scene_coords)
+
+                if Display.line_start == None:
+                    Display.line_start = (mouse_point.x(), mouse_point.y())
+                else:
+                    Display.line_end = (mouse_point.x(), mouse_point.y())
+                    # line = pg.LineSegmentROI([[Display.line_start[0], Display.line_start[1]], [Display.line_end[0], Display.line_end[1]]], movable=True,rotatable=True, resizable=True)
+                    # vb.addItem(line)
+                    if Display.line_end:
+                        handles = Display.mw.line_seg.getHandles()
+                        Display.mw.line_seg.movePoint(handles[0], Display.line_start)
+                        Display.mw.line_seg.movePoint(handles[1], Display.line_end)
+                        length = math.dist(Display.line_start, Display.line_end)
+                        print(length)
+                    Display.line_start = None
+                    Display.line_end = None
+
+
+    def ellipse_mouse_clicked(evt):
+        if Display.active == 'ellipse':
+            vb = Display.selected_plot.plotItem.vb
+            scene_coords = evt.pos()
+            if Display.selected_plot.sceneBoundingRect().contains(scene_coords):
+                mouse_point = vb.mapSceneToView(scene_coords)
+
+                if Display.line_start == None:
+                    Display.line_start = (mouse_point.x(), mouse_point.y())
+                else:
+                    Display.line_end = (mouse_point.x(), mouse_point.y())
+                    # line = pg.LineSegmentROI([[Display.line_start[0], Display.line_start[1]], [Display.line_end[0], Display.line_end[1]]], movable=True,rotatable=True, resizable=True)
+                    # vb.addItem(line)
+                    if Display.line_end:
+                        Display.mw.ellipse.setPos([Display.line_start[0], Display.line_start[1]])
+                        Display.mw.ellipse.setSize([Display.line_end[0] - Display.line_start[0], Display.line_end[1] - Display.line_start[1]])
+                    Display.line_start = None
+                    Display.line_end = None
+
+
+    def poly_mouse_clicked(evt):
+        if Display.active == 'polygon':
+            vb = Display.selected_plot.plotItem.vb
+            scene_coords = evt.pos()
+            if Display.selected_plot.sceneBoundingRect().contains(scene_coords):
+                mouse_point = vb.mapSceneToView(scene_coords)
+                
+                # Display.mw.poly.
+
+                if len(Display.poly_arr) < 3:
+                    Display.poly_arr.append((mouse_point.x(), mouse_point.y()))
+                    Display.mw.poly.setPoints(Display.poly_arr, False)
+                else:
+                    Display.poly_arr.append((mouse_point.x(), mouse_point.y()))
+                    Display.mw.poly.setPoints(Display.poly_arr, True)
+                    Display.poly_arr.clear()
+                    
 
     def init_sagittal_plot(self):
         self.sagittal_image = pg.ImageItem()

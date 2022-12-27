@@ -32,10 +32,20 @@ def importer(path):
     # Set these filenames in the itk reader
     reader.SetFileNames(dicom_names)
 
+    reader.MetaDataDictionaryArrayUpdateOn()
+    reader.LoadPrivateTagsOn()
     # Execute the reader --> automatically uses the data in all the files to create a 3d volume
     image = reader.Execute()
 
     # Extract 3d np array from itk 3d volume
     image_array = sitk.GetArrayFromImage(image)
+    # print(reader.GetMetaData())
+    # print(image[0])
+
+    for k in reader.GetMetaDataKeys(105):
+        v = reader.GetMetaData(105, k)
+        print(f'({k}) = = "{v}"')
+
+    # print(image.GetMetaDataKeys())
 
     return image_array

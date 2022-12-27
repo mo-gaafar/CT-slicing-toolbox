@@ -44,6 +44,33 @@ def init_connectors(self):
     self.angle_slider.valueChanged.connect(lambda: Display.update_image(self, self.volume_array,"axial", self.angle_slider.value()))
     # self.angle_slider.valueChanged.connect(lambda: axial_oline.set)
     self.angle_slider.valueChanged.connect(lambda: self.angle_label.setText(str("Anlge: "+str(self.angle_slider.value()))))
+    self.line.clicked.connect(
+        lambda: Display.setActive(self, 'line')
+    )
+    self.polygon.clicked.connect(
+        lambda: Display.setActive(self, 'polygon')
+    )
+    self.elps.clicked.connect(
+        lambda: Display.setActive(self, 'ellipse')
+    )
+
+    self.clear.clicked.connect(
+        lambda: Display.clear(self)
+    )
+
+    
+
+    def tool_buttons_handler(self, button):
+        if button == 'l':
+            self.elps.checked = False
+            self.polygon.checked = False
+        elif button == 'p':
+            self.line.checked = False
+            self.elps.checked = False
+        elif button == 'e':
+            self.line.checked = False
+            self.polygon.checked = False
+
     
     print_debug("Connectors Initialized")
 
