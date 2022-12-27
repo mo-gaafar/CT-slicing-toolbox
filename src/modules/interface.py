@@ -53,24 +53,12 @@ def init_connectors(self):
     self.elps.clicked.connect(
         lambda: Display.setActive(self, 'ellipse')
     )
-
+    self.angle.clicked.connect(
+        lambda: Display.setActive(self, 'angle')
+    )
     self.clear.clicked.connect(
         lambda: Display.clear(self)
     )
-
-    
-
-    def tool_buttons_handler(self, button):
-        if button == 'l':
-            self.elps.checked = False
-            self.polygon.checked = False
-        elif button == 'p':
-            self.line.checked = False
-            self.elps.checked = False
-        elif button == 'e':
-            self.line.checked = False
-            self.polygon.checked = False
-
     
     print_debug("Connectors Initialized")
 

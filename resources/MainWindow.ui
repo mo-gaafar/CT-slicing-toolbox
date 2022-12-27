@@ -247,6 +247,16 @@ QGroupBox::title  {
         </widget>
        </item>
        <item>
+        <widget class="QToolButton" name="angle">
+         <property name="text">
+          <string>Angle</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="clear">
          <property name="text">
           <string>Clear All</string>

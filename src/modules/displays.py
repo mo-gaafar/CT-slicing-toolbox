@@ -34,7 +34,7 @@ class Display:
         Display.init_oblique_plot(self.mw)
 
         Display.selected_plot = self.mw.axial_box
-        Display.active = 'polygon'
+        Display.active = 'None'
 
     def setActive(self, active):
         Display.active = active
@@ -46,7 +46,7 @@ class Display:
             Display.items.append(self.line_seg)
         elif active == 'angle':
             self.angle = pg.PolyLineROI([[0,0], [0,0]])
-            self.angle.sigRegionChangeFinished.connect(Display.updateEllipseArea)
+            self.angle.sigRegionChangeFinished.connect(Display.updateLinesAngle)
             self.axial_box.addItem(self.angle)
             Display.items.append(self.angle)
         elif active == 'polygon':
@@ -67,11 +67,19 @@ class Display:
             Display.mw.statusbar.showMessage(f'Line Length: {round(length, 3)} mm')
 
 
-    # def updateLinesAngle():
-    #     # get the length of the line segment
-    #         handles = Display.mw.line_seg.getHandles()
-    #         length = math.dist((handles[0].x(), handles[0].y()), (handles[1].x(), handles[1].y()))
-    #         Display.mw.statusbar.showMessage(f'Line Length: {round(length, 3)}')
+    def updateLinesAngle():
+        # get the length of the line segment
+            handles = Display.mw.angle.getHandles()
+            ba = math.dist((handles[0].x(), handles[0].y()), (handles[1].x(), handles[1].y()))
+            bc = math.dist((handles[1].x(), handles[1].y()), (handles[2].x(), handles[2].y()))
+            angle = math.degrees(math.cos(bc / ba))
+
+
+            ang = math.degrees(
+            math.atan2(handles[2].y()-handles[1].y(), handles[2].x()-handles[1].x()) - math.atan2(handles[0].y()-handles[1].y(), handles[0].x()-handles[1].x()))
+            if ang<0:
+                ang=ang+360
+            Display.mw.statusbar.showMessage(f'Angle: {round(ang, 3)}')
 
     def updateEllipseArea():
         # get the size of the ellipse
@@ -81,7 +89,8 @@ class Display:
 
     def updatePolygonArea():
         # get the area of the polygon
-            area = Polygon(Display.poly_arr).area
+            handles = Display.mw.poly.getHandles()
+            area = Polygon([(handles[0].x(),handles[0].y()), (handles[1].x(),handles[1].y()), (handles[2].x(),handles[2].y()), (handles[3].x(),handles[3].y())]).area
             Display.mw.statusbar.showMessage(f'Polygon Area: {round(area, 3)} mm2')
 
 
@@ -109,6 +118,7 @@ class Display:
 
         self.axial_box.scene().sigMouseClicked.connect(Display.line_mouse_clicked)
         self.axial_box.scene().sigMouseClicked.connect(Display.ellipse_mouse_clicked)
+        self.axial_box.scene().sigMouseClicked.connect(Display.angle_mouse_clicked)
         self.axial_box.scene().sigMouseClicked.connect(Display.poly_mouse_clicked)
 
     def line_mouse_clicked(evt):
