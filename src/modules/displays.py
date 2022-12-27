@@ -41,16 +41,36 @@ class Display:
 
         if active == 'line':
             self.line_seg = pg.LineSegmentROI([0,0], [0,0])
+            self.line_seg.sigRegionChangeFinished.connect(Display.updateLineLength)
             self.axial_box.addItem(self.line_seg)
             Display.items.append(self.line_seg)
         elif active == 'polygon':
             self.poly = pg.PolyLineROI([[0,0], [0,0]])
+            self.poly.sigRegionChangeFinished.connect(Display.updateEllipseArea)
             self.axial_box.addItem(self.poly)
             Display.items.append(self.poly)
         elif active == 'ellipse':
             self.ellipse = pg.EllipseROI([0,0], 0.001)
+            self.ellipse.sigRegionChangeFinished.connect(Display.updateEllipseArea)
             self.axial_box.addItem(self.ellipse)
             Display.items.append(self.ellipse)
+
+    def updateLineLength():
+        # get the length of the line segment
+            handles = Display.mw.line_seg.getHandles()
+            length = math.dist((handles[0].x(), handles[0].y()), (handles[1].x(), handles[1].y()))
+            Display.mw.statusbar.showMessage(f'Line Length: {length}')
+
+    def updateEllipseArea():
+        # get the size of the ellipse
+            size = Display.mw.ellipse.size()
+            area = np.pi * size[0] * size[1]
+            Display.mw.statusbar.showMessage(f'Ellipse Area: {area}')
+
+    def updatePolygonArea():
+        # get the area of the polygon
+            area = Polygon(Display.poly_arr).area
+            Display.mw.statusbar.showMessage(f'Polygon Area: {area}')
 
 
     def clear(self):
@@ -106,8 +126,6 @@ class Display:
                         handles = Display.mw.line_seg.getHandles()
                         Display.mw.line_seg.movePoint(handles[0], Display.line_start)
                         Display.mw.line_seg.movePoint(handles[1], Display.line_end)
-                        length = math.dist(Display.line_start, Display.line_end)
-                        Display.mw.statusbar.showMessage(f'Polygon Area: {length}')
                     Display.line_start = None
                     Display.line_end = None
 
@@ -147,8 +165,6 @@ class Display:
                 else:
                     Display.poly_arr.append((mouse_point.x(), mouse_point.y()))
                     Display.mw.poly.setPoints(Display.poly_arr, True)
-                    area = Polygon(Display.poly_arr).area
-                    Display.mw.statusbar.showMessage(f'Polygon Area: {area}')
                     Display.poly_arr.clear()
                     
 
