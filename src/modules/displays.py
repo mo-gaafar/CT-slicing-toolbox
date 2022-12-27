@@ -67,6 +67,7 @@ class Display:
         self.poly=pg.PolyLineROI([[0, 0], [27, 0], [0, 28]], closed=False)
         self.sagittal_box.addItem(self.poly)
         self.sagittal_box.scene().sigMouseClicked.connect(self.mouse_clicked_line_angle)
+        self.poly.sigRegionChanged.connect(self.regionUpdated_poly)
 
     def init_coronal_plot(self):
         self.coronal_image = pg.ImageItem()

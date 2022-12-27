@@ -115,6 +115,40 @@ class MainWindow(QtWidgets.QMainWindow):
          print("distanceeeeeeeeeeeeee")
          print(dist)
          return dist
+    def regionUpdated_poly(self,regionItem):
+     points=[]
+     xarr=[]
+     yarr=[]
+     points= regionItem.getLocalHandlePositions() 
+     for i in range (len(points)):
+           point=points[i][1]
+           print(point.x())
+           xarr.append(point.x())
+           yarr.append(point.y())
+           
+     self.angle(xarr,yarr)    
+    
+    def angle(self,a,b):
+     """Counterclockwise angle in degrees by turning from a to c around b
+        Returns a float between 0.0 and 360.0"""
+     ang = math.degrees(
+     math.atan2(b[2]-b[1], a[2]-a[1]) - math.atan2(b[0]-b[1], a[0]-a[1]))
+    #  self.count=0
+    #  self.a=[]
+     print("angleeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+     if ang<0:
+        ang=ang+360
+        print("angle")
+        print(ang)
+        return ang
+     else:
+        print("angle")
+        print(ang)
+        return ang   
+     print("angle")
+     
+     return ang + 360 if ang < 0 else ang       
+     
 
     
             
