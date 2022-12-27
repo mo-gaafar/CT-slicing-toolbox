@@ -37,6 +37,20 @@ class Display:
         self.axial_box.addItem(self.axial_vline)
         self.axial_box.addItem(self.axial_hline)
         self.axial_box.addItem(self.axial_oline)
+        self.line=pg.LineSegmentROI([[100, 100], [300, 300]], pen=Display.pen, movable=True,rotatable=True, resizable=True)
+        self.axial_box.addItem(self.line)
+        #self.lr = pg.LinearRegionItem([10, 40])
+        #self.poly=pg.PolyLineROI([[0, 0], [27, 0], [0, 28]], closed=False)
+        #self.elipse=pg.MultiLineROI([1, 1], [40, 28], pen=Display.pen)
+        #self.axial_box.addItem(self.elipse)
+        #self.axial_box.addItem(self.poly)
+        self.line.sigRegionChanged.connect(self.regionUpdated)
+        self.axial_box.scene().sigMouseClicked.connect(self.mouse_clicked_line)
+        
+        
+        
+    
+    
 
     def init_sagittal_plot(self):
         self.sagittal_image = pg.ImageItem()
@@ -50,6 +64,9 @@ class Display:
         self.sagittal_hline = pg.InfiniteLine(angle=0, movable=True, pen=Display.pen, name='sagittal_hline')
         self.sagittal_box.addItem(self.sagittal_vline)
         self.sagittal_box.addItem(self.sagittal_hline)
+        self.poly=pg.PolyLineROI([[0, 0], [27, 0], [0, 28]], closed=False)
+        self.sagittal_box.addItem(self.poly)
+        self.sagittal_box.scene().sigMouseClicked.connect(self.mouse_clicked_line_angle)
 
     def init_coronal_plot(self):
         self.coronal_image = pg.ImageItem()

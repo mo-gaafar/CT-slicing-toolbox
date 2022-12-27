@@ -44,7 +44,7 @@ def init_connectors(self):
     self.angle_slider.valueChanged.connect(lambda: Display.update_image(self, self.volume_array,"axial", self.angle_slider.value()))
     # self.angle_slider.valueChanged.connect(lambda: axial_oline.set)
     self.angle_slider.valueChanged.connect(lambda: self.angle_label.setText(str("Anlge: "+str(self.angle_slider.value()))))
-    
+    # self.line.sigRegionChanged.connect(lambda:Display.regionUpdated())
     print_debug("Connectors Initialized")
 
 def about_us(self):
