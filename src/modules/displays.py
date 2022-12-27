@@ -3,6 +3,7 @@ import numpy as np
 import pyqtgraph as pg
 from modules.slicevolume import get_oblique_slice
 import math
+from shapely import Polygon
 
 pg.setConfigOption('imageAxisOrder', 'row-major')
 
@@ -106,7 +107,7 @@ class Display:
                         Display.mw.line_seg.movePoint(handles[0], Display.line_start)
                         Display.mw.line_seg.movePoint(handles[1], Display.line_end)
                         length = math.dist(Display.line_start, Display.line_end)
-                        print(length)
+                        Display.mw.statusbar.showMessage(f'Polygon Area: {length}')
                     Display.line_start = None
                     Display.line_end = None
 
@@ -146,6 +147,8 @@ class Display:
                 else:
                     Display.poly_arr.append((mouse_point.x(), mouse_point.y()))
                     Display.mw.poly.setPoints(Display.poly_arr, True)
+                    area = Polygon(Display.poly_arr).area
+                    Display.mw.statusbar.showMessage(f'Polygon Area: {area}')
                     Display.poly_arr.clear()
                     
 
