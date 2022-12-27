@@ -93,6 +93,12 @@ def get_oblique_slice(arr, angle, point):
                 z0 = 0
 
             # generate linespace of z coordinates dependent on array size
+            # check if z0 or zb are NaN
+            if np.isnan(z0):
+                z0 = 0
+            if np.isnan(zb):
+                zb = arr.shape[2]-1
+                
             z_coords = np.linspace(int(z0),int(zb)-1, arr.shape[2])
             y_coords = z_coords * slope + y0
             
