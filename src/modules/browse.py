@@ -42,9 +42,11 @@ def importer(path):
     # print(reader.GetMetaData())
     # print(image[0])
 
+
     for k in reader.GetMetaDataKeys(105):
         v = reader.GetMetaData(105, k)
         print(f'({k}) = = "{v}"')
+
 
     # print(image.GetMetaDataKeys())
 

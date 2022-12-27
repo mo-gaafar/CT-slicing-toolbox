@@ -5,6 +5,7 @@
 
 # Virtual environments
 
+env/
 lib/
 include/
 scripts/
