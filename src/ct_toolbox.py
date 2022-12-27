@@ -6,6 +6,7 @@ from modules.displays import Display
 import numpy as np
 import math
 from modules.utility import print_debug, print_log
+from shapely import Polygon
 import sys
 
 
@@ -14,6 +15,7 @@ class MainWindow(QtWidgets.QMainWindow):
     arr=[]
     count=0
     a=[]
+    polygoncoords=[]
 
     def __init__(self, *args, **kwargs):
         ''' Main window constructor'''
@@ -147,10 +149,42 @@ class MainWindow(QtWidgets.QMainWindow):
         return ang   
      print("angle")
      
-     return ang + 360 if ang < 0 else ang       
-     
+     return ang + 360 if ang < 0 else ang  
+    def mouse_clicked_line_polygon(self, evt):
 
-    
+        vb = self.coronal_box.plotItem.vb
+        scene_coords = evt.scenePos()
+        if self.coronal_box.sceneBoundingRect().contains(scene_coords):
+            mouse_point = vb.mapSceneToView(scene_coords)
+            if self.count<4:
+             print(f'clicked plot X: {mouse_point.x()}, Y: {mouse_point.y()}, event: {evt}') 
+             self.polygoncoords.append([mouse_point.x(),mouse_point.y()])
+             print(self.polygoncoords)
+             self.count=self.count+1
+            
+
+             
+            if self.count==4:  
+             self.polyarea(self.polygoncoords)
+            
+    def polyarea(self,coords):
+        polygon = Polygon(coords)
+        print(polygon)
+        print("area")
+        print(polygon.area)
+        self.count=0
+        self.polygoncoords=[]
+        return polygon.area
+    def regionUpdated_polygon(self,regionItem):
+     points=[]
+     coordspoly=[]
+     points= regionItem.getLocalHandlePositions() 
+     for i in range (len(points)):
+           point=points[i][1]
+           #print(point.x())
+           coordspoly.append([point.x(),point.y()])
+           
+     self.polyarea(coordspoly)    
             
     
 

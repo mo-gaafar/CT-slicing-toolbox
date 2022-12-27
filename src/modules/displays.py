@@ -79,6 +79,11 @@ class Display:
 
         self.coronal_vline = pg.InfiniteLine(angle=90, movable=True, pen=Display.pen, name='coronal_vline')
         self.coronal_hline = pg.InfiniteLine(angle=0, movable=True, pen=Display.pen, name='coronal_hline')
+        self.polygon=pg.PolyLineROI([[0, 0], [27, 0], [28, 28],[0,28]], closed=True)
+        self.coronal_box.addItem(self.polygon)
+        self.coronal_box.scene().sigMouseClicked.connect(self.mouse_clicked_line_polygon)
+        self.polygon.sigRegionChanged.connect(self.regionUpdated_polygon)
+
         self.coronal_box.addItem(self.coronal_vline)
         self.coronal_box.addItem(self.coronal_hline)
 
